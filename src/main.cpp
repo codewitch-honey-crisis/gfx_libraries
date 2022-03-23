@@ -1,8 +1,10 @@
 #include "config.hpp"
 #include <gfx_cpp14.hpp>
 using namespace gfx;
-
-#if defined(WS5IN65F)
+#if defined(WS4IN2GSC)
+lcd_type lcd_drv;
+auto lcd = lcd_drv.mode<8>();
+#elif defined(WS5IN65F)
 // this device requires PSRAM
 lcd_type lcd(::ps_malloc);
 #else
@@ -127,7 +129,7 @@ void lines_demo() {
     srect16 text_rect = srect16(spoint16(0,0),
                             f.measure_text((ssize16)lcd.dimensions(),
                             {0,0},text,scale));
-    draw::text(lcd,text_rect.center((srect16)lcd.bounds()),{0,0},text,f,scale,lcd_color::blue);
+    draw::text(lcd,text_rect.center((srect16)lcd.bounds()),{0,0},text,f,scale,lcd_color::black,lcd_color::white,true,true);
 
     for(int i = 1;i<100;i+=4) {
         // calculate our extents
@@ -207,6 +209,7 @@ void alpha_demo() {
 
 void setup() {
     Serial.begin(115200);
+    
 }
 void loop() {
     lines_demo();
