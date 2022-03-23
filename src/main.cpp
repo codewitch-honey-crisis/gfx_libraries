@@ -124,7 +124,7 @@ void lines_demo() {
 #endif
     draw::filled_rectangle(lcd,(srect16)lcd.bounds(),lcd_color::white);
     const open_font& f = Maziro_ttf;
-    const char* text = "GFX DEMO";
+    const char* text = "GFX";
     const float scale = f.scale(min(lcd.dimensions().width,lcd.dimensions().height)/2);
     srect16 text_rect = srect16(spoint16(0,0),
                             f.measure_text((ssize16)lcd.dimensions(),
