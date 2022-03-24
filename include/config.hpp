@@ -148,6 +148,13 @@
 #define LCD_HEIGHT 212
 #define LCD_EPAPER
 #define LCD_COLOR
+#elif defined(WS1IN54BV2)
+#include <waveshare1in54bv2.hpp>
+#define PIN_NUM_WAIT 15
+#define LCD_WIDTH 200
+#define LCD_HEIGHT 200
+#define LCD_EPAPER
+#define LCD_COLOR
 #endif
 
 #ifdef LCD_COLOR
@@ -274,6 +281,13 @@ using lcd_type = waveshare5in65f<PIN_NUM_DC,
                                 LCD_WRITE_SPEED_PERCENT>;
 #elif defined(WS2IN13B)
 using lcd_type = waveshare2in13b<PIN_NUM_DC,
+                                PIN_NUM_RST,
+                                PIN_NUM_WAIT,
+                                bus_type,
+                                16,
+                                LCD_WRITE_SPEED_PERCENT>;
+#elif defined(WS1IN54BV2)
+using lcd_type = waveshare1in54bv2<PIN_NUM_DC,
                                 PIN_NUM_RST,
                                 PIN_NUM_WAIT,
                                 bus_type,

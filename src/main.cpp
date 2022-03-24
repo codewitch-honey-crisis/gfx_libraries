@@ -143,9 +143,11 @@ void lines_demo() {
         draw::line(lcd,srect16(0,r.y2,r.x1,0),lcd_color::orange);
         draw::line(lcd,srect16(lcd.dimensions().width-1,r.y1,r.x2,lcd.dimensions().height-1),lcd_color::green);        
     }
+    
 #ifdef LCD_EPAPER
     draw::resume(lcd);
 #endif
+    
     delay(500);
 }
 void alpha_demo() {
@@ -218,6 +220,7 @@ void loop() {
     scroll_text_demo();
     bmp_demo();
 #endif
+
     // won't look great on a limited color display
     alpha_demo();
 #ifdef LCD_EPAPER
