@@ -79,7 +79,9 @@
 
 #include <Arduino.h>
 #include <stdio.h>
+#ifndef LGT54IN7
 #include <tft_io.hpp>
+#endif
 #if defined(ILI9341)
 #include <ili9341.hpp>
 #if defined(ESP_WROVER_KIT)
@@ -155,6 +157,9 @@
 #define LCD_HEIGHT 200
 #define LCD_EPAPER
 #define LCD_COLOR
+#elif defined(LGT54IN7)
+#include <lilygot54in7.hpp>
+#define LCD_EPAPER
 #endif
 
 #ifdef LCD_COLOR
@@ -188,7 +193,7 @@ using bus_type = tft_p8<PIN_NUM_CS,
 using bus_type = tft_i2c_ex<LCD_PORT,
                             PIN_NUM_SDA,
                             PIN_NUM_SCL>;
-#else
+#elif !defined(LGT54IN7)
 using bus_type = tft_spi_ex<LCD_HOST,
                             PIN_NUM_CS,
                             PIN_NUM_MOSI,
@@ -293,4 +298,6 @@ using lcd_type = waveshare1in54bv2<PIN_NUM_DC,
                                 bus_type,
                                 16,
                                 LCD_WRITE_SPEED_PERCENT>;
+#elif defined(LGT54IN7)
+using lcd_type = lilygot54in7;
 #endif
