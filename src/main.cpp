@@ -124,13 +124,27 @@ void lines_demo() {
 #endif
     draw::filled_rectangle(lcd,(srect16)lcd.bounds(),lcd_color::white);
     const open_font& f = Maziro_ttf;
+    const font& f2 = Bm437_ATI_9x16_FON;
     const char* text = "GFX";
-    const float scale = f.scale(min(lcd.dimensions().width,lcd.dimensions().height)/2);
+    const char* text2 = (lcd.dimensions().width>200)?"honey the codewitch":"HTCW";
+    int height = min(lcd.dimensions().width,lcd.dimensions().height)/2;
+    const float scale = f.scale(height);
     srect16 text_rect = srect16(spoint16(0,0),
                             f.measure_text((ssize16)lcd.dimensions(),
                             {0,0},text,scale));
-    draw::text(lcd,text_rect.center((srect16)lcd.bounds()),{0,0},text,f,scale,lcd_color::black,lcd_color::white,true,true);
-
+    draw::text(lcd,text_rect.center((srect16)lcd.bounds()),{0,0},text,f,scale,lcd_color::blue,lcd_color::white,true,true);
+    if(lcd.dimensions().height>32) {
+        text_rect = srect16(spoint16(0,0),
+                                f2.measure_text((ssize16)lcd.dimensions(),
+                                text2));
+        uint16_t offsy = -(text_rect.height()/2+16);
+        if(lcd.dimensions().width>200) {
+            offsy = text_rect.height()/2;
+        }
+        srect16 sr = text_rect.center((srect16)lcd.bounds()).offset(0,offsy);
+        draw::text(lcd,sr,text2,f2,lcd_color::black,lcd_color::white,false);
+    }
+    
     for(int i = 1;i<100;i+=4) {
         // calculate our extents
         srect16 r(i*(lcd.dimensions().width/100.0),
