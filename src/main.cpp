@@ -2,6 +2,7 @@
 #include <gfx_cpp14.hpp>
 using namespace gfx;
 #if defined(WS4IN2GSC)
+// this device has different modes
 lcd_type lcd_drv;
 auto lcd = lcd_drv.mode<8>();
 #elif defined(WS5IN65F)

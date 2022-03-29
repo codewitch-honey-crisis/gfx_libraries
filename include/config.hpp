@@ -110,7 +110,7 @@
 #define PIN_NUM_BKL 15
 #define LCD_WIDTH 480
 #define LCD_HEIGHT 800
-#define LCD_ROTATION 1
+#define LCD_ROTATION 2
 #define LCD_COLOR
 #elif defined(ST7735)
 #include <st7735.hpp>
@@ -239,8 +239,8 @@ using lcd_type = st7789<LCD_WIDTH,
 #elif defined(RA8875)
 using lcd_type = ra8875<LCD_WIDTH,
                         LCD_HEIGHT,
-                        bus_type,
                         PIN_NUM_RST,
+                        bus_type,
                         -1,
                         LCD_ROTATION,
                         LCD_WRITE_SPEED_PERCENT,
