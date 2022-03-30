@@ -94,7 +94,11 @@
 #endif
 #define LCD_WIDTH 240
 #define LCD_HEIGHT 320
+#ifdef WIO_TERMINAL
+#define LCD_ROTATION 3
+#else
 #define LCD_ROTATION 1
+#endif
 #define LCD_COLOR
 #elif defined(ST7789)
 #include <st7789.hpp>
@@ -160,6 +164,10 @@
 #elif defined(LGT54IN7)
 #include <lilygot54in7.hpp>
 #define LCD_EPAPER
+#elif defined(MAX7219)
+#include <max7219.hpp>
+#define LCD_WIDTH 32
+#define LCD_HEIGHT 8
 #endif
 
 #ifdef LCD_COLOR
@@ -175,6 +183,7 @@
 #include "Maziro.h"
 // generated with fontgen
 #include "Bm437_ATI_9x16.h"
+#include "Bm437_Acer_VGA_8x8.h"
 
 using namespace arduino;
 #ifdef PARALLEL8
@@ -194,6 +203,9 @@ using bus_type = tft_i2c_ex<LCD_PORT,
                             PIN_NUM_SDA,
                             PIN_NUM_SCL>;
 #elif !defined(LGT54IN7)
+#ifdef WIO_TERMINAL
+using bus_type = tft_spi_ex<3,LCD_SS_PIN,SPI_MODE0>;
+#else
 using bus_type = tft_spi_ex<LCD_HOST,
                             PIN_NUM_CS,
                             PIN_NUM_MOSI,
@@ -211,8 +223,18 @@ using bus_type = tft_spi_ex<LCD_HOST,
 #endif
                             >;
 #endif
-
+#endif
 #if defined(ILI9341)
+#if defined(WIO_TERMINAL)
+using lcd_type = ili9341<LCD_DC,
+                        LCD_RESET,
+                        LCD_BACKLIGHT,
+                        bus_type,
+                        LCD_ROTATION,
+                        LCD_BKL_HIGH,
+                        LCD_WRITE_SPEED_PERCENT,
+                        LCD_READ_SPEED_PERCENT>;
+#else
 using lcd_type = ili9341<PIN_NUM_DC,
                         PIN_NUM_RST,
                         PIN_NUM_BKL,
@@ -221,6 +243,7 @@ using lcd_type = ili9341<PIN_NUM_DC,
                         LCD_BKL_HIGH,
                         LCD_WRITE_SPEED_PERCENT,
                         LCD_READ_SPEED_PERCENT>;
+#endif
 #elif defined(ST7789)
 using lcd_type = st7789<LCD_WIDTH,
                         LCD_HEIGHT,
@@ -300,4 +323,6 @@ using lcd_type = waveshare1in54bv2<PIN_NUM_DC,
                                 LCD_WRITE_SPEED_PERCENT>;
 #elif defined(LGT54IN7)
 using lcd_type = lilygot54in7;
+#elif defined(MAX7219)
+using lcd_type = max7219<LCD_WIDTH/8,LCD_HEIGHT/8,bus_type>;
 #endif
