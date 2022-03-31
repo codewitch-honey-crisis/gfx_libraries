@@ -14,7 +14,7 @@ This is a demo of GFX on various display devices.
 - ESP32 ESP-WROVER-DEVKIT 4.1
 - ESP32 Lilygo TTGO
 - ESP32 Lilygo T5 4.7 inch
-- ESP32 RA8875
+- ESP32 RA8875 (No alpha blending)
 - ESP32 MAX7219
 - Wio Terminal ILI9341
 
