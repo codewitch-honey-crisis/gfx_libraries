@@ -1,6 +1,6 @@
 # GFX Libraries
 
-This is a demo of GFX on various display devices.
+This is a demo of [GFX](https://honeythecodewitch.com/gfx) on various display devices.
 
 - ESP32 ILI9341 (SPI and 8-bit Parallel)
 - ESP32 ST7789
@@ -17,5 +17,7 @@ This is a demo of GFX on various display devices.
 - ESP32 RA8875 (No alpha blending)
 - ESP32 MAX7219
 - Wio Terminal ILI9341
+- PWM LED controller
+- RGB PWM LED controller
 
 You can use this project from PlatformIO
