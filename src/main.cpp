@@ -159,11 +159,10 @@ void lines_demo() {
                             f2.measure_text((ssize16)lcd.dimensions(), text2));
         uint16_t offsy = -(text_rect.height() / 2 + 16);
         if (lcd.dimensions().width > 200) {
-            offsy = text_rect.height() / 2;
+            offsy = text_rect.height() + (text_rect.height() / 2)+16;
         }
         srect16 sr = text_rect.center((srect16)lcd.bounds()).offset(0, offsy);
-        draw::text(lcd, sr, text2, f2, lcd_color::black, lcd_color::white,
-                   false);
+        draw::text(lcd, sr, text2, f2, lcd_color::black);
     }
 
     for (int i = 1; i < 100; i += 4) {
