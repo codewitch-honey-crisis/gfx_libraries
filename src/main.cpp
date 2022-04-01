@@ -20,9 +20,17 @@ using bmp_color = color<typename bmp_type::pixel_type>;
 using mono_bmp_type = bitmap<gsc_pixel<1>>;
 using mono_bmp_color = color<typename mono_bmp_type::pixel_type>;
 size16 mono_bmp_size;
-uint8_t* mono_buf;
+uint8_t *mono_buf;
 int mono_x;
-const char* mono_text =
+
+uint8_t r = 0;
+int rd = 1;
+uint8_t g = 127;
+int gd = 1;
+uint8_t b = 255;
+int bd = -1;
+
+const char *mono_text =
     "GFX Demo - Copyright (C) 2022 by honey the codewitch - MIT license  ";
 
 // declare the bitmap
@@ -77,8 +85,10 @@ void bmp_demo() {
         draw::filled_rectangle(lcd, r, lcd_color::black);
         srect16 r2 = r.offset(dx, dy);
         if (!((srect16)lcd.bounds()).contains(r2)) {
-            if (r2.x1 < 0 || r2.x2 > lcd.bounds().x2) dx = -dx;
-            if (r2.y1 < 0 || r2.y2 > lcd.bounds().y2) dy = -dy;
+            if (r2.x1 < 0 || r2.x2 > lcd.bounds().x2)
+                dx = -dx;
+            if (r2.y1 < 0 || r2.y2 > lcd.bounds().y2)
+                dy = -dy;
             r = r.offset(dx, dy);
         } else
             r = r2;
@@ -92,8 +102,8 @@ void bmp_demo() {
 // produced by request
 void scroll_text_demo() {
     lcd.clear(lcd.bounds());
-    const font& f = Bm437_ATI_9x16_FON;
-    const char* text = "(C) 2021\r\nby HTCW";
+    const font &f = Bm437_ATI_9x16_FON;
+    const char *text = "(C) 2021\r\nby HTCW";
     ssize16 text_size = f.measure_text((ssize16)lcd.dimensions(), text);
     srect16 text_rect =
         srect16(spoint16((lcd.dimensions().width - text_size.width) / 2,
@@ -122,7 +132,8 @@ void scroll_text_demo() {
             first = false;
         }
         draw::resume(lcd);
-        if (!first && text_rect.x1 >= text_start) break;
+        if (!first && text_rect.x1 >= text_start)
+            break;
     }
 }
 
@@ -131,10 +142,10 @@ void lines_demo() {
     draw::suspend(lcd);
 #endif
     draw::filled_rectangle(lcd, (srect16)lcd.bounds(), lcd_color::white);
-    const open_font& f = Maziro_ttf;
-    const font& f2 = Bm437_ATI_9x16_FON;
-    const char* text = "GFX";
-    const char* text2 =
+    const open_font &f = Maziro_ttf;
+    const font &f2 = Bm437_ATI_9x16_FON;
+    const char *text = "GFX";
+    const char *text2 =
         (lcd.dimensions().width > 200) ? "honey the codewitch" : "HTCW";
     int height = min(lcd.dimensions().width, lcd.dimensions().height) / 2;
     const float scale = f.scale(height);
@@ -241,13 +252,13 @@ void setup() {
     Serial.begin(115200);
     if (lcd.dimensions().height > 1 && lcd.dimensions().height < 16) {
         size_t len = strlen(mono_text);
-        const font& f = Bm437_Acer_VGA_8x8_FON;
+        const font &f = Bm437_Acer_VGA_8x8_FON;
         mono_bmp_size = size16(f.measure_text({int16_t(len * f.average_width()),
                                                (int16_t)f.height()},
                                               mono_text)
                                    .width,
                                lcd.dimensions().height);
-        mono_buf = (uint8_t*)malloc(bmp_type::sizeof_buffer(mono_bmp_size));
+        mono_buf = (uint8_t *)malloc(bmp_type::sizeof_buffer(mono_bmp_size));
         mono_bmp_type bmp(mono_bmp_size, mono_buf);
         bmp.clear(bmp.bounds());
         mono_x = 0;
@@ -259,6 +270,90 @@ void setup() {
     }
 }
 void loop() {
+
+    if (lcd.dimensions().height == 1) {
+        decltype(lcd)::pixel_type px;
+        if(lcd.dimensions().width == 1) {
+            px.channel<0>(r);
+            if (rd == 1) {
+                if (r == 255) {
+                    rd = -1;
+                }
+            } else {
+                if (r == 0) {
+                    rd = 1;
+                }
+            }
+            r += rd;
+
+            px.channel_unchecked<1>(g);
+            if (gd == 1) {
+                if (g == 255) {
+                    gd = -1;
+                }
+            } else {
+                if (g == 0) {
+                    gd = 1;
+                }
+            }
+            g += gd;
+
+            px.channel_unchecked<2>(b);
+            if (bd == 1) {
+                if (b == 255) {
+                    bd = -1;
+                }
+            } else {
+                if (b == 0) {
+                    bd = 1;
+                }
+            }
+            b += bd;
+            lcd.point({0, 0}, px);
+            delay(10);
+            
+        } else {
+            px.channel<0>(r);
+            if (rd == 1) {
+                if (r == 255) {
+                    rd = -1;
+                }
+            } else {
+                if (r == 0) {
+                    rd = 1;
+                }
+            }
+            r += rd;
+            lcd.point({0, 0}, px);
+            px.channel<0>(g);
+            if (gd == 1) {
+                if (g == 255) {
+                    gd = -1;
+                }
+            } else {
+                if (g == 0) {
+                    gd = 1;
+                }
+            }
+            g += gd;
+            lcd.point({1, 0}, px);
+            px.channel<0>(b);
+            if (bd == 1) {
+                if (b == 255) {
+                    bd = -1;
+                }
+            } else {
+                if (b == 0) {
+                    bd = 1;
+                }
+            }
+            b += bd;
+            lcd.point({2, 0}, px);
+            delay(10);
+            
+        }
+        return;
+    }
     if (mono_buf == nullptr) {
         lines_demo();
 #ifndef LCD_EPAPER

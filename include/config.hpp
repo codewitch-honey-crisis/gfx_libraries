@@ -79,9 +79,6 @@
 
 #include <Arduino.h>
 #include <stdio.h>
-#ifndef LGT54IN7
-#include <tft_io.hpp>
-#endif
 #if defined(ILI9341)
 #include <ili9341.hpp>
 #if defined(ESP_WROVER_KIT)
@@ -163,12 +160,34 @@
 #define LCD_COLOR
 #elif defined(LGT54IN7)
 #include <lilygot54in7.hpp>
+#define NO_SPI
 #define LCD_EPAPER
 #elif defined(MAX7219)
 #include <max7219.hpp>
 #define LCD_WIDTH 32
 #define LCD_HEIGHT 8
+#elif defined(PWM)
+#include <pwm.hpp>
+#define PIN_NUM_LED1 32
+#define PIN_NUM_LED2 25
+#define PIN_NUM_LED3 26
+#define LCD_WIDTH 3
+#define LCD_HEIGHT 1
+#define NO_SPI
+#elif defined(RGB_PWM)
+#include <rgb_pwm.hpp>
+#define PIN_NUM_R1 32
+#define PIN_NUM_G1 25
+#define PIN_NUM_B1 26
+#define LCD_WIDTH 1
+#define LCD_HEIGHT 1
+#define NO_SPI
 #endif
+
+#ifndef NO_SPI
+#include <tft_io.hpp>
+#endif
+
 
 #ifdef LCD_COLOR
 // generated with bingen
@@ -202,7 +221,7 @@ using bus_type = tft_p8<PIN_NUM_CS,
 using bus_type = tft_i2c_ex<LCD_PORT,
                             PIN_NUM_SDA,
                             PIN_NUM_SCL>;
-#elif !defined(LGT54IN7)
+#elif !defined(NO_SPI)
 #ifdef WIO_TERMINAL
 using bus_type = tft_spi_ex<3,LCD_SS_PIN,SPI_MODE0>;
 #else
@@ -325,4 +344,19 @@ using lcd_type = waveshare1in54bv2<PIN_NUM_DC,
 using lcd_type = lilygot54in7;
 #elif defined(MAX7219)
 using lcd_type = max7219<LCD_WIDTH/8,LCD_HEIGHT/8,bus_type>;
+#elif defined(PWM) 
+using lcd_type = pwm<
+                  5000,
+                  8,
+                  PIN_NUM_LED1,
+                  PIN_NUM_LED2,
+                  PIN_NUM_LED3>;
+#elif defined(RGB_PWM)
+using lcd_type = rgb_pwm<
+  rgb_pwm_group<
+    pwm_traits<PIN_NUM_R1,0>,
+    pwm_traits<PIN_NUM_B1,1>,
+    pwm_traits<PIN_NUM_G1,2>
+  >
+>;
 #endif
