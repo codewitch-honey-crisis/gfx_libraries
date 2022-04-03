@@ -15,7 +15,7 @@ lcd_type lcd;
 
 using lcd_color = color<rgb_pixel<16>>;
 
-using bmp_type = bitmap<rgb_pixel<16>>;
+using bmp_type = bitmap<decltype(lcd)::pixel_type>;
 using bmp_color = color<typename bmp_type::pixel_type>;
 using mono_bmp_type = bitmap<gsc_pixel<1>>;
 using mono_bmp_color = color<typename mono_bmp_type::pixel_type>;
@@ -37,6 +37,8 @@ const char *mono_text =
 constexpr static const size16 bmp_size(16, 16);
 uint8_t bmp_buf[bmp_type::sizeof_buffer(bmp_size)];
 bmp_type bmp(bmp_size, bmp_buf);
+mono_bmp_type mask_buf[mono_bmp_type::sizeof_buffer(bmp_size)];
+mono_bmp_type mask(bmp_size,mask_buf);
 void bmp_demo() {
     lcd.clear(lcd.bounds());
 
@@ -74,12 +76,19 @@ void bmp_demo() {
                        mouth_bounds.x2, mouth_bounds.y2);
 
     draw::ellipse(bmp, mouth_bounds, bmp_color::black, &mouth_clip);
+    
+    mask.clear(mask.bounds());
+    draw::filled_ellipse(mask, bounds, bmp_color::white);
+
+    using sprite_type = sprite<typename bmp_type::pixel_type>;
+
+    sprite_type sprite(bmp_size,bmp_buf,mask_buf);
     int dx = 1;
     int dy = 2;
     lcd.clear(lcd.bounds());
     // now we're going to draw the bitmap to the lcd instead, animating it
     int i = 0;
-    srect16 r = (srect16)bmp.bounds().center(lcd.bounds());
+    srect16 r = (srect16)sprite.dimensions().bounds().center(lcd.bounds());
     while (i < 150) {
         draw::suspend(lcd);
         draw::filled_rectangle(lcd, r, lcd_color::black);
@@ -92,7 +101,7 @@ void bmp_demo() {
             r = r.offset(dx, dy);
         } else
             r = r2;
-        draw::bitmap(lcd, r, bmp, bmp.bounds(), bitmap_resize::crop, &tpx);
+        draw::sprite(lcd,{r.x1,r.y1},sprite);
         draw::resume(lcd);
         delay(10);
         ++i;

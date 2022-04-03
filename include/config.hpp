@@ -317,7 +317,6 @@ using lcd_type = waveshare4in2gsc<PIN_NUM_DC,
                                 PIN_NUM_RST,
                                 PIN_NUM_WAIT,
                                 bus_type,
-                                8,
                                 LCD_WRITE_SPEED_PERCENT>;
 #elif defined(WS5IN65F)
 using lcd_type = waveshare5in65f<PIN_NUM_DC,
