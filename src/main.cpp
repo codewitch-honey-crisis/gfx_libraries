@@ -88,7 +88,7 @@ void bmp_demo() {
     lcd.clear(lcd.bounds());
     // now we're going to draw the bitmap to the lcd instead, animating it
     int i = 0;
-    srect16 r = (srect16)sprite.dimensions().bounds().center(lcd.bounds());
+    srect16 r = (srect16)sprite.bounds().center(lcd.bounds());
     while (i < 150) {
         draw::suspend(lcd);
         draw::filled_rectangle(lcd, r, lcd_color::black);
