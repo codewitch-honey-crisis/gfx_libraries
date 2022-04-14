@@ -276,6 +276,9 @@ void setup() {
                            ssize16(bmp.dimensions().width, f.height())),
                    mono_text, f, mono_bmp_color::white);
     }
+    large_bitmap<rgb_pixel<16>> foo({16,16},1);
+    foo.fill(foo.bounds(),color<rgb_pixel<16>>::purple);
+    draw::rectangle(foo,(srect16)foo.bounds(),color<rgb_pixel<16>>::white);
 }
 void loop() {
 
