@@ -101,7 +101,7 @@ void bmp_demo() {
             r = r.offset(dx, dy);
         } else
             r = r2;
-        draw::sprite(lcd,{r.x1,r.y1},sprite);
+        draw::sprite(lcd,spoint16(r.x1,r.y1),sprite);
         draw::resume(lcd);
         delay(10);
         ++i;
