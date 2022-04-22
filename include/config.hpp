@@ -1,4 +1,5 @@
 #pragma once
+//#define PIN_NUM_BKL 22
 // ensure the following is configured for your setup
 #if defined(PARALLEL8)
 #define PIN_NUM_BKL  -1
@@ -300,6 +301,7 @@ using lcd_type = st7735<PIN_NUM_DC,
 using lcd_type = ssd1306<LCD_WIDTH,
                         LCD_HEIGHT,
                         bus_type,
+                        0,
                         4,
                         LCD_ADDRESS,
                         LCD_VDC_3_3,
