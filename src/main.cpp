@@ -2,7 +2,8 @@
 
 #include "config.hpp"
 //#include "ummm.hpp"
-#include "frankenstein_jpg.hpp"
+//#include "frankenstein_jpg.hpp"
+#include "frankenstein.hpp"
 using namespace gfx;
 lcd_type lcd;
 
@@ -13,8 +14,8 @@ const char *text =
 void setup() {
     Serial.begin(115200);
     draw::filled_rectangle(lcd,lcd.bounds(),lcd_color::white);
-    //draw::bitmap(lcd,lcd.bounds(),frankenstein,frankenstein.bounds());
-    draw::image(lcd,lcd.bounds(),&frankenstein);
+    draw::bitmap(lcd,lcd.bounds(),frankenstein,frankenstein.bounds());
+    //draw::image(lcd,lcd.bounds(),&frankenstein);
 }
 void loop() {
 }
