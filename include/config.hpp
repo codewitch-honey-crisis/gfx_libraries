@@ -224,7 +224,7 @@ using bus_type = tft_i2c_ex<LCD_PORT,
                             PIN_NUM_SCL>;
 #elif !defined(NO_SPI)
 #ifdef WIO_TERMINAL
-using bus_type = tft_spi_ex<3,LCD_SS_PIN,SPI_MODE0>;
+using bus_type = tft_spi<3,LCD_SS_PIN,SPI_MODE0>;
 #else
 using bus_type = tft_spi_ex<LCD_HOST,
                             PIN_NUM_CS,
