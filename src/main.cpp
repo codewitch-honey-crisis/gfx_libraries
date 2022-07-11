@@ -1,4 +1,4 @@
-#include <gfx_cpp14.hpp>
+#include <gfx.hpp>
 
 #include "config.hpp"
 using namespace gfx;

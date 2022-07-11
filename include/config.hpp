@@ -53,17 +53,23 @@
 #define LCD_WRITE_SPEED_PERCENT 400 // 400KHz - can sometimes be 800
 #else
 #define LCD_HOST VSPI
+#if !defined(M5STACK)
 #define PIN_NUM_CS 5
+#endif
 #define PIN_NUM_MOSI 23
-#if defined(ILI9341) || defined(RA8875)
+#if defined(ILI9341) || defined(ILI9342C) || defined(RA8875)
 #define PIN_NUM_MISO 19
 #else
 #define PIN_NUM_MISO -1
 #endif
 #define PIN_NUM_CLK 18
+#if !defined(M5STACK)
 #define PIN_NUM_DC 2
 #define PIN_NUM_RST 4
+#endif
 #if defined(ILI9341) || defined(ST7789)
+#define LCD_WRITE_SPEED_PERCENT 400 // 40MHz
+#elif defined(ILI9342C)
 #define LCD_WRITE_SPEED_PERCENT 400 // 40MHz
 #else
 #define LCD_WRITE_SPEED_PERCENT 200 // 20MHz
@@ -72,6 +78,8 @@
 // SDA reads are slow
 #define LCD_READ_SPEED_PERCENT 40 // 4MHz
 #elif defined(WS5IN65F) || defined(WS4IN2GSC)
+#define LCD_READ_SPEED_PERCENT 100 // 10MHz
+#elif defined(ILI9342C)
 #define LCD_READ_SPEED_PERCENT 100 // 10MHz
 #else
 #define LCD_READ_SPEED_PERCENT 200 // 20MHz
@@ -98,6 +106,24 @@
 #define LCD_ROTATION 1
 #endif
 #define LCD_COLOR
+#elif defined(ILI9342C)
+#include <ili9341.hpp>
+#define LCD_ROTATION 1
+#if defined(M5STACK)
+
+#define PIN_NUM_BKL 32
+#define PIN_NUM_RST 33
+#define PIN_NUM_DC 27
+#define PIN_NUM_CS 14
+#define LCD_BKL_HIGH true
+#endif
+#ifndef PIN_NUM_BKL
+#define PIN_NUM_BKL 15
+#endif
+#define LCD_WIDTH 240
+#define LCD_HEIGHT 320
+#define LCD_COLOR
+
 #elif defined(ST7789)
 #include <st7789.hpp>
 #ifndef LILYGO_TTGO
@@ -233,13 +259,13 @@ using bus_type = tft_spi_ex<LCD_HOST,
                             PIN_NUM_CLK,
                             SPI_MODE0,
 // some devices have no SDA read capability, so no read whatsoever.
-#if defined(LCD_EPAPER) || defined(SSD1306) || defined(SSD1351) 
+#if defined(LCD_EPAPER) || defined(SSD1306) || defined(SSD1351) || defined(ILI9342C)
                             false
 #else
                             PIN_NUM_MISO<0
 #endif
 #ifdef OPTIMIZE_DMA
-                            ,(LCD_WIDTH*LCD_HEIGHT)/8+8
+                            ,(LCD_WIDTH*LCD_HEIGHT)*2+8
 #endif
                             >;
 #endif
@@ -264,6 +290,15 @@ using lcd_type = ili9341<PIN_NUM_DC,
                         LCD_WRITE_SPEED_PERCENT,
                         LCD_READ_SPEED_PERCENT>;
 #endif
+#elif defined(ILI9342C)
+using lcd_type = ili9342c<PIN_NUM_DC,
+                        PIN_NUM_RST,
+                        PIN_NUM_BKL,
+                        bus_type,
+                        LCD_ROTATION,
+                        LCD_BKL_HIGH,
+                        LCD_WRITE_SPEED_PERCENT,
+                        LCD_READ_SPEED_PERCENT>;
 #elif defined(ST7789)
 using lcd_type = st7789<LCD_WIDTH,
                         LCD_HEIGHT,
